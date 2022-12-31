@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Product;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,8 @@ class ProductsController extends Controller
 
     public function index()
     {
-        return view("admin.product.index");
+        $products = Product::all();
+        return view("admin.product.index", compact('products'));
     }
 
     /**
@@ -40,7 +42,28 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            "product_name" => "required",
+            "image" => "required|image|mimes:png,jpg,jpeg,svg|max:2048",
+            "description" => "required",
+        ]);
+
+        $imageName = $request->file('image')->hashName();
+        $request->image->move(public_path('images'), $imageName);
+
+        $data = Product::create([
+            'product_name' => $request->post('product_name'),
+            'image' => $imageName,
+            'description' => $request->post('description'),
+        ]);
+
+        if ($data->save()) {
+            return redirect()->route('product.index')
+                ->with('success', 'Add Product has successfully');;
+        } else {
+            return redirect()->route('product.create')
+                ->with('failed', 'Add Product has failed');;
+        }
     }
 
     /**
@@ -51,7 +74,8 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
-        //
+        $product = Product::find($id);
+        return view("admin.product.show", compact('product'));
     }
 
     /**

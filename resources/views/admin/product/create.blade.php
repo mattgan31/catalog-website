@@ -9,18 +9,20 @@
                     <div class="card-header">{{ __('Add the Product') }}</div>
 
                     <div class="card-body">
-                        <form action="/admin/product">
+                        <form action="/admin/product" enctype="multipart/form-data" method="POST">
+                            @csrf
                             <div class="form-group">
                                 <label>Product's Name</label>
-                                <input type="text" class="form-control" placeholder="Enter the Name of Product">
+                                <input type="text" class="form-control" placeholder="Enter the Name of Product"
+                                    name="product_name">
                             </div>
                             <div class="form-group">
                                 <label>Image</label>
-                                <input type="file" class="form-control">
+                                <input type="file" class="form-control" name="image">
                             </div>
                             <div class="form-group">
                                 <label>Description of Product</label>
-                                <textarea type="file" class="form-control" placeholder="Describe the Product"></textarea>
+                                <textarea type="file" class="form-control" placeholder="Describe the Product" name="description"></textarea>
                             </div>
                             <button type="submit" class="btn btn-success">Submit</button>
                         </form>
