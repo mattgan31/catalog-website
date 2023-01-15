@@ -9,6 +9,15 @@
                     <div class="card-header">{{ __('Add the Product') }}</div>
 
                     <div class="card-body">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         <form action="/admin/product" enctype="multipart/form-data" method="POST">
                             @csrf
                             <div class="form-group">
