@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Product;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProductsController extends Controller
 {
@@ -42,6 +44,7 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
+        // error_log($request);
         $this->validate($request, [
             "product_name" => "required",
             "image" => "required|image|mimes:png,jpg,jpeg,svg|max:2048",
@@ -50,11 +53,11 @@ class ProductsController extends Controller
 
         $imageName = $request->file('image')->hashName();
         $request->image->move(public_path('images'), $imageName);
-
         $data = Product::create([
             'product_name' => $request->post('product_name'),
             'image' => $imageName,
             'description' => $request->post('description'),
+            'user_id' => Auth::id(),
         ]);
 
         if ($data->save()) {
@@ -74,7 +77,13 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
-        $product = Product::find($id);
+        // $product = Product::find($id);
+        $product = DB::table('products')
+            ->join('users', 'products.user_id', '=', 'users.id')
+            ->select('products.*', 'users.name')
+            ->where('products.id', '=', $id)
+            ->first();
+
         return view("admin.product.show", compact('product'));
     }
 
