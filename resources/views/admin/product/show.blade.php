@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Production')
+@section('title', 'Product')
 
 @section('content')
 <div class="container">
@@ -22,6 +22,12 @@
                 </div>
                 <div class="card-footer">
                     <a href="/admin/product" class="btn btn-primary">Back to Products</a>
+                    <a href="/admin/product/{{$product->id}}/edit" class="btn btn-success">Edit</a>
+                    <form action="/admin/product/{{$product->id}}" method="post" class="d-inline">
+                        @method('DELETE')
+                        @csrf
+                        <button class="btn btn-danger" type="submit">Delete</button>
+                    </form>
                 </div>
             </div>
         </div>
