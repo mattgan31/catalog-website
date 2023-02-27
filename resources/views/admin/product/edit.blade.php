@@ -18,21 +18,25 @@
                         </ul>
                     </div>
                     @endif
-                    <form action="/admin/product" enctype="multipart/form-data" method="POST">
+                    <form action="/admin/product/{{$product->id}}" enctype="multipart/form-data" method="POST">
                         @csrf
+                        @method('PUT')
                         <div class="form-group">
                             <label>Product's Name</label>
-                            <input type="text" class="form-control" placeholder="Enter the Name of Product" name="product_name">
+                            <input type="text" class="form-control" placeholder="Enter the Name of Product" name="product_name" value="{{$product->product_name}}">
                         </div>
                         <div class="form-group">
                             <label>Image</label>
-                            <input type="file" class="form-control" name="image">
+                            <input type="file" class="form-control" name="image" value="{{$product->image}}">
+                            @if ($product->image)
+                            <img src="{{ asset('images') }}/{{ $product->image }}" alt="" class="img-fluid">
+                            @endif
                         </div>
-                        <div class="form-group">
+                        <div class=" form-group">
                             <label>Description of Product</label>
-                            <textarea type="file" class="form-control" placeholder="Describe the Product" name="description"></textarea>
+                            <textarea type="file" class="form-control" placeholder="Describe the Product" name="description">{{$product->description}}</textarea>
                         </div>
-                        <button type="submit" class="btn btn-success">Submit</button>
+                        <button type=" submit" class="btn btn-success">Submit</button>
                     </form>
                 </div>
                 <div class="card-footer">

@@ -62,10 +62,10 @@ class ProductsController extends Controller
 
         if ($data->save()) {
             return redirect()->route('product.index')
-                ->with('success', 'Add Product has successfully');;
+                ->with('success', 'Add Product has successfully');
         } else {
             return redirect()->route('product.create')
-                ->with('failed', 'Add Product has failed');;
+                ->with('failed', 'Add Product has failed');
         }
     }
 
@@ -95,7 +95,8 @@ class ProductsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $product = Product::find($id);
+        return view('admin.product.edit', compact('product'));
     }
 
     /**
@@ -107,7 +108,32 @@ class ProductsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            "product_name" => "required",
+            "description" => "required",
+            "image" => "image|mimes:png,jpg,jpeg,svg|max:2048",
+        ]);
+
+        $data = Product::find($id);
+
+        if ($request->image == null) {
+        } else {
+            $imageName = $request->file('image')->hashName();
+            $request->image->move(public_path('images'), $imageName);
+            $data->image = $imageName;
+        }
+
+        $data->product_name = $request->product_name;
+        $data->description = $request->description;
+
+        if ($data->update()) {
+            return redirect()->route('product.index')
+                ->with('success', 'Edit Product has successfully');
+        } else {
+            return redirect()->route('product.edit')
+                ->with('failed', 'Edit Product has failed');
+        }
+        // dd($request);
     }
 
     /**
@@ -118,6 +144,9 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $data = Product::find($id);
+        $data->delete();
+        return redirect()->route('product.index')
+            ->with('success', 'Product has deleted');;
     }
 }
