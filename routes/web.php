@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\ProductsController;
+use App\Http\Controllers\Admin\AboutsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,4 +23,5 @@ Auth::routes();
 
 Route::get('admin/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 Route::resource("admin/product", ProductsController::class);
+Route::get("admin/about", [AboutsController::class, 'index']);
 // Route::get('admin/products', ProductsController::class, "index");
