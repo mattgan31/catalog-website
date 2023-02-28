@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Product;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -118,6 +119,11 @@ class ProductsController extends Controller
 
         if ($request->image == null) {
         } else {
+            $image_file = public_path('images\\') . $data->image;
+            if (File::exists($image_file)) {
+                File::delete($image_file);
+            }
+
             $imageName = $request->file('image')->hashName();
             $request->image->move(public_path('images'), $imageName);
             $data->image = $imageName;
@@ -145,6 +151,10 @@ class ProductsController extends Controller
     public function destroy($id)
     {
         $data = Product::find($id);
+        $image_file = public_path('images\\') . $data->image;
+        if (File::exists($image_file)) {
+            File::delete($image_file);
+        }
         $data->delete();
         return redirect()->route('product.index')
             ->with('success', 'Product has deleted');;
