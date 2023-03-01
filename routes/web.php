@@ -23,5 +23,11 @@ Auth::routes();
 
 Route::get('admin/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 Route::resource("admin/product", ProductsController::class);
-Route::get("admin/about", [AboutsController::class, 'index']);
+Route::get("admin/about", [AboutsController::class, 'index'])->name('about.index');
+Route::get("admin/about/create", [AboutsController::class, 'create'])->name('about.create');
+Route::get("admin/about/edit", [AboutsController::class, 'edit'])->name('about.edit');
+Route::post("admin/about", [AboutsController::class, 'store']);
+Route::put("admin/about", [AboutsController::class, 'update']);
+
+
 // Route::get('admin/products', ProductsController::class, "index");
