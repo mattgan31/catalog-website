@@ -15,7 +15,8 @@ class AboutsController extends Controller
      */
     public function index()
     {
-        return view("admin.about.index");
+        $about = Abouts::first();
+        return view("admin.about.index", compact('about'));
     }
 
     /**
@@ -25,7 +26,7 @@ class AboutsController extends Controller
      */
     public function create()
     {
-        //
+        return view("admin.about.create");
     }
 
     /**
@@ -36,7 +37,23 @@ class AboutsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'about_title' => 'required',
+            'about_description' => 'required|min:20'
+        ]);
+
+        $data = Abouts::create([
+            'about_title' => $request->about_title,
+            'about_description' => $request->about_description,
+        ]);
+
+        if ($data->save()) {
+            return redirect()->route('about.index')
+                ->with('success', "About has been created");
+        } else {
+            return redirect()->route('about.create')
+                ->with('failed', "About has been failed to create");
+        }
     }
 
     /**
@@ -58,7 +75,8 @@ class AboutsController extends Controller
      */
     public function edit(Abouts $abouts)
     {
-        //
+        $data = Abouts::first();
+        return view('admin.about.edit', compact('data'));
     }
 
     /**
@@ -70,7 +88,23 @@ class AboutsController extends Controller
      */
     public function update(Request $request, Abouts $abouts)
     {
-        //
+        $this->validate($request, [
+            'about_title' => 'required',
+            'about_description' => 'required|min:20'
+        ]);
+
+        $data = Abouts::first();
+
+        $data->about_title = $request->about_title;
+        $data->about_description = $request->about_description;
+
+        if ($data->update()) {
+            return redirect()->route('about.index')
+                ->with('success', "About has been created");
+        } else {
+            return redirect()->route('about.edit')
+                ->with('failed', "About has been failed to update");
+        }
     }
 
     /**
