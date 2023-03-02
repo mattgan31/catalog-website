@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\ProductsController;
 use App\Http\Controllers\Admin\AboutsController;
+use App\Http\Controllers\Admin\MissionsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,11 +24,17 @@ Auth::routes();
 
 Route::get('admin/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 Route::resource("admin/product", ProductsController::class);
+
+// About Admin
 Route::get("admin/about", [AboutsController::class, 'index'])->name('about.index');
 Route::get("admin/about/create", [AboutsController::class, 'create'])->name('about.create');
 Route::get("admin/about/edit", [AboutsController::class, 'edit'])->name('about.edit');
 Route::post("admin/about", [AboutsController::class, 'store']);
 Route::put("admin/about", [AboutsController::class, 'update']);
 
-
-// Route::get('admin/products', ProductsController::class, "index");
+// Mission Admin
+Route::get("admin/mission", [MissionsController::class, 'index'])->name('mission.index');
+Route::get("admin/mission/create", [MissionsController::class, 'create'])->name('mission.create');
+Route::get("admin/mission/edit", [MissionsController::class, 'edit'])->name('mission.edit');
+Route::post("admin/mission", [MissionsController::class, 'store']);
+Route::put("admin/mission", [MissionsController::class, 'update']);
