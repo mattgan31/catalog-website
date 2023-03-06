@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\ProductsController;
 use App\Http\Controllers\Admin\AboutsController;
+use App\Http\Controllers\Admin\MembersController;
 use App\Http\Controllers\Admin\MissionsController;
 /*
 |--------------------------------------------------------------------------
@@ -38,3 +39,7 @@ Route::get("admin/mission/create", [MissionsController::class, 'create'])->name(
 Route::get("admin/mission/edit", [MissionsController::class, 'edit'])->name('mission.edit');
 Route::post("admin/mission", [MissionsController::class, 'store']);
 Route::put("admin/mission", [MissionsController::class, 'update']);
+
+// Members Admin
+// Route::get("admin/members", [MembersController::class, 'index']);
+Route::resource("admin/members", MembersController::class);
