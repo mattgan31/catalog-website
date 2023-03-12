@@ -341,7 +341,7 @@ return [
                     'url' => 'admin/mission',
                 ], [
                     'text' => 'Member',
-                    'url' => 'admin/member',
+                    'url' => 'admin/members',
                 ]
             ]
         ],
