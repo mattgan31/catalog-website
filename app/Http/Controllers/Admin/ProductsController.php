@@ -53,7 +53,7 @@ class ProductsController extends Controller
         ]);
 
         $imageName = $request->file('image')->hashName();
-        $request->image->move(public_path('images'), $imageName);
+        $request->image->move(public_path('images/products'), $imageName);
         $data = Product::create([
             'product_name' => $request->post('product_name'),
             'image' => $imageName,
@@ -125,7 +125,7 @@ class ProductsController extends Controller
             }
 
             $imageName = $request->file('image')->hashName();
-            $request->image->move(public_path('images'), $imageName);
+            $request->image->move(public_path('images/products'), $imageName);
             $data->image = $imageName;
         }
 
@@ -151,7 +151,8 @@ class ProductsController extends Controller
     public function destroy($id)
     {
         $data = Product::find($id);
-        $image_file = public_path('images\\') . $data->image;
+        $image_file = public_path("images/products/") . $data->image;
+        // error_log($image_file);
         if (File::exists($image_file)) {
             File::delete($image_file);
         }
