@@ -6,6 +6,9 @@ use App\Http\Controllers\Admin\ProductsController;
 use App\Http\Controllers\Admin\AboutsController;
 use App\Http\Controllers\Admin\MembersController;
 use App\Http\Controllers\Admin\MissionsController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\User\UsersController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,13 +20,16 @@ use App\Http\Controllers\Admin\MissionsController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/', [UsersController::class, 'index']);
 
 Auth::routes();
 
-Route::get('admin/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+Route::get('admin', [HomeController::class, 'index']);
+Route::get('admin/dashboard', [HomeController::class, 'index'])->name('dashboard');
 Route::resource("admin/product", ProductsController::class);
 
 // About Admin
