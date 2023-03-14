@@ -23,7 +23,7 @@
                             @foreach ($members as $p)
                             <tr>
                                 <td>
-                                    <img src="{{ asset('images') }}/{{ $p->image }}" alt="{{ $p->members_name }}" class="img-thumbnail" style="width:200px">
+                                    <img src="{{ asset('images/members') }}/{{ $p->image }}" alt="{{ $p->members_name }}" class="img-thumbnail" style="width:200px">
                                 </td>
                                 <td>
                                     <p class="">{{ $p->member_name }}</p>
