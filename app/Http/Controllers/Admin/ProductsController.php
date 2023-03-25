@@ -50,6 +50,7 @@ class ProductsController extends Controller
             "product_name" => "required",
             "image" => "required|image|mimes:png,jpg,jpeg,svg|max:2048",
             "description" => "required",
+            "price" => "required"
         ]);
 
         $imageName = $request->file('image')->hashName();
@@ -59,6 +60,7 @@ class ProductsController extends Controller
             'image' => $imageName,
             'description' => $request->post('description'),
             'user_id' => Auth::id(),
+            'price' => $request->post('price'),
         ]);
 
         if ($data->save()) {
@@ -113,6 +115,7 @@ class ProductsController extends Controller
             "product_name" => "required",
             "description" => "required",
             "image" => "image|mimes:png,jpg,jpeg,svg|max:2048",
+            "price" => "required"
         ]);
 
         $data = Product::find($id);
@@ -131,6 +134,7 @@ class ProductsController extends Controller
 
         $data->product_name = $request->product_name;
         $data->description = $request->description;
+        $data->price = $request->price;
 
         if ($data->update()) {
             return redirect()->route('product.index')
