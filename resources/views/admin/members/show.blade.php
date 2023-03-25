@@ -11,7 +11,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-4">
-                            <img src="{{ asset('images') }}/{{ $member->image }}" alt="" class="img-fluid">
+                            <img src="{{ asset('images/members') }}/{{ $member->image }}" alt="" class="img-fluid">
                         </div>
                         <div class="col">
                             <p><b>Member Name:</b> {{ $member->member_name }}</p>

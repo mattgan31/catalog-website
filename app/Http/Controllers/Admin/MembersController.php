@@ -46,7 +46,7 @@ class MembersController extends Controller
         ]);
 
         $imageName = $request->file('image')->hashName();
-        $request->image->move(public_path('images'), $imageName);
+        $request->image->move(public_path('images/members'), $imageName);
         $data = Members::create([
             'member_name' => $request->post('member_name'),
             'image' => $imageName,
@@ -107,7 +107,7 @@ class MembersController extends Controller
 
         if ($request->image == null) {
         } else {
-            $image_file = public_path('images\\') . $data->image;
+            $image_file = public_path('images/members') . $data->image;
             if (File::exists($image_file)) {
                 File::delete($image_file);
             }
@@ -139,7 +139,7 @@ class MembersController extends Controller
     public function destroy($id)
     {
         $data = Members::find($id);
-        $image_file = public_path('images\\') . $data->image;
+        $image_file = public_path('images/members/') . $data->image;
         if (File::exists($image_file)) {
             File::delete($image_file);
         }

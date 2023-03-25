@@ -50,15 +50,17 @@ class ProductsController extends Controller
             "product_name" => "required",
             "image" => "required|image|mimes:png,jpg,jpeg,svg|max:2048",
             "description" => "required",
+            "price" => "required"
         ]);
 
         $imageName = $request->file('image')->hashName();
-        $request->image->move(public_path('images'), $imageName);
+        $request->image->move(public_path('images/products'), $imageName);
         $data = Product::create([
             'product_name' => $request->post('product_name'),
             'image' => $imageName,
             'description' => $request->post('description'),
             'user_id' => Auth::id(),
+            'price' => $request->post('price'),
         ]);
 
         if ($data->save()) {
@@ -113,6 +115,7 @@ class ProductsController extends Controller
             "product_name" => "required",
             "description" => "required",
             "image" => "image|mimes:png,jpg,jpeg,svg|max:2048",
+            "price" => "required"
         ]);
 
         $data = Product::find($id);
@@ -125,12 +128,13 @@ class ProductsController extends Controller
             }
 
             $imageName = $request->file('image')->hashName();
-            $request->image->move(public_path('images'), $imageName);
+            $request->image->move(public_path('images/products'), $imageName);
             $data->image = $imageName;
         }
 
         $data->product_name = $request->product_name;
         $data->description = $request->description;
+        $data->price = $request->price;
 
         if ($data->update()) {
             return redirect()->route('product.index')
@@ -151,7 +155,8 @@ class ProductsController extends Controller
     public function destroy($id)
     {
         $data = Product::find($id);
-        $image_file = public_path('images\\') . $data->image;
+        $image_file = public_path("images/products/") . $data->image;
+        // error_log($image_file);
         if (File::exists($image_file)) {
             File::delete($image_file);
         }
