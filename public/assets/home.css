@@ -2,17 +2,20 @@
     margin: 0px;
     font-family: Helvetica, sans-serif;
 }
+
 nav a {
     text-decoration: none;
     color: #cbe4de;
     font-weight: bold;
     margin: auto;
 }
+
 nav li {
     list-style: none;
     width: 90px;
     /* margin: 0 auto; */
 }
+
 nav ul {
     display: flex;
     line-height: 48px;
@@ -88,7 +91,7 @@ section article .card .card-body span {
 }
 
 section article .card img {
-    width: 260px;
+    width: 400px;
     height: 320px;
     object-fit: cover;
     border: 1px solid #d6d6d6;
@@ -96,8 +99,19 @@ section article .card img {
     margin-bottom: 4px;
 }
 
+section article .wrap-card {
+    width: 30%;
+}
+
 section article .wrap {
     display: inline-flex;
     justify-content: space-around;
     width: 100%;
+}
+
+@media all and (max-width: 1370px) {
+    section article .card img {
+        width: 100%;
+        height: 320px;
+    }
 }
