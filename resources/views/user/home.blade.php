@@ -26,19 +26,25 @@
         <article>
             <h1>Terbaru di Sterophone!</h1>
             <div class="wrap">
-                @foreach ($products as $product)
-                    <div class="wrap-card">
-                        <div class="card">
-                            <div class="card-image">
-                                <img src="{{ asset('images/products') }}/{{ $product->image }}" alt="">
-                            </div>
-                            <div class="card-body">
-                                <h3>{{ $product->product_name }}</h3>
-                                <p>Harga : <span>{{}}</span></p>
+                @if (count($products) == 0)
+                    <div class="empty">
+                        <h3>Products is not available</h3>
+                    </div>
+                @else
+                    @foreach ($products as $product)
+                        <div class="wrap-card">
+                            <div class="card">
+                                <div class="card-image">
+                                    <img src="{{ asset('images/products') }}/{{ $product->image }}" alt="">
+                                </div>
+                                <div class="card-body">
+                                    <h3>{{ $product->product_name }}</h3>
+                                    <p>Harga : <span>Rp{{ number_format($product->price, 0, ',', '.') }}</span></p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                @endif
             </div>
         </article>
     </section>
