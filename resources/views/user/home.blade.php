@@ -24,7 +24,10 @@
     </header>
     <section>
         <article>
-            <h1>Terbaru di Sterophone!</h1>
+            <div class="wrap-header">
+                <h1>Terbaru di Sterophone!</h1>
+                <a href="">Show All</a>
+            </div>
             <div class="wrap">
                 @if (count($products) == 0)
                     <div class="empty">
@@ -38,7 +41,7 @@
                                     <img src="{{ asset('images/products') }}/{{ $product->image }}" alt="">
                                 </div>
                                 <div class="card-body">
-                                    <h3>{{ $product->product_name }}</h3>
+                                    <h4>{{ $product->product_name }}</h4>
                                     <p>Harga : <span>Rp{{ number_format($product->price, 0, ',', '.') }}</span></p>
                                 </div>
                             </div>
