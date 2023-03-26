@@ -10,7 +10,7 @@ class UsersController extends Controller
 {
     public function index()
     {
-        $products = DB::table('products')->limit(3)->get();
+        $products = DB::table('products')->limit(4)->orderBy('created_at', 'desc')->get();
         // error_log($products);
         return view('user.home', compact('products'));
     }
