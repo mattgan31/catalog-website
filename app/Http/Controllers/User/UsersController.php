@@ -14,4 +14,11 @@ class UsersController extends Controller
         // error_log($products);
         return view('user.home', compact('products'));
     }
+
+    public function show_all_products()
+    {
+        $products = DB::table('products')->orderBy('created_at', 'desc')->get();
+
+        return view('user.list_products', compact('products'));
+    }
 }
