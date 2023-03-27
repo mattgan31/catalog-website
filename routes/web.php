@@ -26,6 +26,7 @@ use App\Http\Controllers\User\UsersController;
 
 Route::get('/', [UsersController::class, 'index']);
 Route::get('/show-all', [UsersController::class, 'show_all_products']);
+Route::get('/about-us', [UsersController::class, 'about_us']);
 
 Auth::routes();
 

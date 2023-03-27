@@ -21,4 +21,11 @@ class UsersController extends Controller
 
         return view('user.list_products', compact('products'));
     }
+
+    public function about_us()
+    {
+        $about = DB::table('about')->first();
+        $mission = DB::table('mission')->first();
+        return view('user.about_us', compact('about'), compact('mission'));
+    }
 }
