@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
+    'logo' => '<b>Stero</b>Phone',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
@@ -326,11 +326,24 @@ return [
             'label_color' => 'success',
         ],
         [
-            'text'        => 'About Us',
-            'url'         => 'admin/about',
+            'text'        => 'Others',
+            // 'url'         => 'admin/about',
             'icon'        => 'fas fa-fw fa-user',
             // 'label'       => 4,
             'label_color' => 'success',
+            'submenu' => [
+                [
+                    'text' => 'About',
+                    'url' => 'admin/about',
+                ],
+                [
+                    'text' => 'Mission',
+                    'url' => 'admin/mission',
+                ], [
+                    'text' => 'Member',
+                    'url' => 'admin/members',
+                ]
+            ]
         ],
         [
             'text'        => 'Contact',
