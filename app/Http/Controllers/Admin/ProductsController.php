@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ProductsController extends Controller
 {
@@ -45,23 +46,17 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
-        // error_log($request);
-        $this->validate($request, [
-            "product_name" => "required",
-            "image" => "required|image|mimes:png,jpg,jpeg,svg|max:2048",
-            "description" => "required",
-            "price" => "required"
-        ]);
+        $validator = $this->validateProductData($request);
 
-        $imageName = $request->file('image')->hashName();
-        $request->image->move(public_path('images/products'), $imageName);
-        $data = Product::create([
-            'product_name' => $request->post('product_name'),
-            'image' => $imageName,
-            'description' => $request->post('description'),
-            'user_id' => Auth::id(),
-            'price' => $request->post('price'),
-        ]);
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $imageName = $this->uploadProductImage($request);
+
+        $data = $this->createNewProduct($request, $imageName);
 
         if ($data->save()) {
             return redirect()->route('product.index')
@@ -111,39 +106,31 @@ class ProductsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            "product_name" => "required",
-            "description" => "required",
-            "image" => "image|mimes:png,jpg,jpeg,svg|max:2048",
-            "price" => "required"
-        ]);
+        $validator = $this->validateProductData($request, true);
 
-        $data = Product::find($id);
-
-        if ($request->image == null) {
-        } else {
-            $image_file = public_path('images\\') . $data->image;
-            if (File::exists($image_file)) {
-                File::delete($image_file);
-            }
-
-            $imageName = $request->file('image')->hashName();
-            $request->image->move(public_path('images/products'), $imageName);
-            $data->image = $imageName;
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
-        $data->product_name = $request->product_name;
-        $data->description = $request->description;
-        $data->price = $request->price;
+        $product = Product::find($id);
 
-        if ($data->update()) {
+        $this->updateProductImage($request, $product);
+
+        $product->update([
+            'product_name' => $request->product_name,
+            'description' => $request->description,
+            'price' => $request->price,
+        ]);
+
+        if ($product->wasChanged()) {
             return redirect()->route('product.index')
                 ->with('success', 'Edit Product has successfully');
         } else {
             return redirect()->route('product.edit')
                 ->with('failed', 'Edit Product has failed');
         }
-        // dd($request);
     }
 
     /**
@@ -154,14 +141,87 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        $data = Product::find($id);
-        $image_file = public_path("images/products/") . $data->image;
-        // error_log($image_file);
+        $product = Product::find($id);
+        $image_file = public_path("images/products/") . $product->image;
+
         if (File::exists($image_file)) {
             File::delete($image_file);
         }
-        $data->delete();
-        return redirect()->route('product.index')
-            ->with('success', 'Product has deleted');;
+
+        if ($product->delete()) {
+            return redirect()->route('product.index')
+                ->with('success', 'Product has deleted');
+        } else {
+            return redirect()->route('product.index')
+                ->with('failed', 'Product could not be deleted');
+        }
+    }
+
+    public function validateProductData($request, $update = false)
+    {
+        $rules = [
+            'product_name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+        ];
+
+        if (!$update) {
+            $rules['image'] = 'required|image|max:2048';
+        } else {
+            $rules['image'] = 'nullable|image|max:2048';
+        }
+
+        $messages = [
+            'product_name.required' => 'Nama produk harus diisi.',
+            'product_name.string' => 'Nama produk harus berupa string.',
+            'product_name.max' => 'Nama produk tidak boleh lebih dari 255 karakter.',
+            'description.required' => 'Deskripsi produk harus diisi.',
+            'description.string' => 'Deskripsi produk harus berupa string.',
+            'price.required' => 'Harga produk harus diisi.',
+            'price.numeric' => 'Harga produk harus berupa angka.',
+            'price.min' => 'Harga produk tidak boleh kurang dari 0.',
+            'image.required' => 'Gambar produk harus diisi.',
+            'image.image' => 'Gambar produk harus berupa file gambar.',
+            'image.max' => 'Ukuran gambar produk tidak boleh lebih dari 2MB.'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        return $validator;
+    }
+
+
+    private function uploadProductImage(Request $request)
+    {
+        $imageName = $request->file('image')->hashName();
+        $request->image->move(public_path('images/products'), $imageName);
+        return $imageName;
+    }
+
+    private function updateProductImage(Request $request, $product)
+    {
+        if ($request->hasFile('image')) {
+            $image_file = public_path('images/products/') . $product->image;
+            if (File::exists($image_file)) {
+                File::delete($image_file);
+            }
+            $imageName = $request->file('image')->hashName();
+            $request->image->move(public_path('images/products'), $imageName);
+            $product->image = $imageName;
+        } else {
+            $product->image = $product->image;
+        }
+    }
+
+
+    private function createNewProduct(Request $request, $imageName)
+    {
+        return Product::create([
+            'product_name' => $request->post('product_name'),
+            'image' => $imageName,
+            'description' => $request->post('description'),
+            'user_id' => Auth::id(),
+            'price' => $request->post('price'),
+        ]);
     }
 }
