@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Missions;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class MissionsController extends Controller
 {
@@ -37,15 +38,17 @@ class MissionsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'mission_title' => 'required',
-            'mission_description' => 'required|min:20',
-        ]);
+        // Validator
+        $validator = $this->validateMissionData($request);
 
-        $data = Missions::create([
-            'mission_title' => $request->mission_title,
-            'mission_description' => $request->mission_description,
-        ]);
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Create
+        $data = $this->createNewMission($request);
 
         // dd($request->mission_description);
         if ($data->save()) {
@@ -76,8 +79,8 @@ class MissionsController extends Controller
      */
     public function edit(Missions $missions)
     {
-        $data = Missions::first();
-        return view('admin.mission.edit', compact('data'));
+        $mission = Missions::first();
+        return view('admin.mission.edit', compact('mission'));
     }
 
     /**
@@ -89,23 +92,29 @@ class MissionsController extends Controller
      */
     public function update(Request $request, Missions $missions)
     {
-        $this->validate($request, [
-            'mission_title' => 'required',
-            'mission_description' => 'required|min:20',
+        // Validator
+        $validator = $this->validateMissionData($request);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Update
+        $mission = Missions::first();
+
+        $mission->update([
+            'mission_title' => $request->mission_title,
+            'mission_description' => $request->mission_description,
         ]);
 
-        $data = Missions::first();
-
-        $data->mission_title = $request->mission_title;
-        $data->mission_description = $request->mission_description;
-
-        if ($data->update()) {
+        if ($mission->wasChanged()) {
             return redirect()->route('mission.index')
                 ->with('success', "Mission has been created");
-        } else {
-            return redirect()->route('mission.create')
-                ->with('failed', "Mission has been failed to create");
         }
+        return redirect()->back()
+            ->with('failed', "Mission has been failed to create")->withInput();
     }
 
     /**
@@ -117,5 +126,31 @@ class MissionsController extends Controller
     public function destroy(Missions $missions)
     {
         //
+    }
+
+    private function validateMissionData($request)
+    {
+        $rules = [
+            'mission_title' => 'required',
+            'mission_description' => 'required|min:20',
+        ];
+
+        $messages = [
+            "mission_title.required" => "Judul Mission harus diisi",
+            "mission_description.required" => "Deskripsi Mission harus diisi",
+            "mission_description.min" => "Deskripsi minimal memiliki 20 karakter"
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        return $validator;
+    }
+
+    private function createNewMission($request)
+    {
+        return Missions::create([
+            'mission_title' => $request->mission_title,
+            'mission_description' => $request->mission_description,
+        ]);
     }
 }
